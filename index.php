@@ -1,2 +1,4 @@
 <?php
-print("Initial commit!");
+
+require 'vendor/autoload.php';
+include_once('routes.php');

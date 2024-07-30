@@ -1,0 +1,17 @@
+{
+    "name": "bilal/medic_api",
+    "require": {
+        "mikecao/flight": "^3.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bilal\\MedicApi\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Bilal Durakovic",
+            "email": "bilal.durakovic@stu.ibu.edu.ba"
+        }
+    ]
+}
