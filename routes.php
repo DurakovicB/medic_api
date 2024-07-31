@@ -14,7 +14,9 @@ if ($conn->connect_error) {
 
 Flight::route('/', function(){
     print("Hello!");
-    //Flight::redirect("/users");
+    $response = Flight::request()->post('/users/block/1', $data);
+
+    echo 'Response: ' . $response->data;
 });
 
 Flight::route('GET /users', function(){
@@ -35,5 +37,38 @@ Flight::route('GET /users', function(){
         Flight::json(array('message' => 'No user data found.'));
     }
 });
+
+Flight::route('GET /users/details/@id', function($id) {
+    global $conn;
+
+        $sql = "SELECT * FROM users WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $result=$result->fetch_assoc();
+            Flight::json($result);
+        }
+        else
+            Flight::json(false);
+});
+
+Flight::route('POST /users/block/@id', function($id) {
+    global $conn;
+
+        $sql = "UPDATE users SET status = 'blocked'  WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+
+        if ($stmt->affected_rows>0) {
+            Flight::json(["message" => "Blocked user with id " . $id]);
+        }
+        else{
+            Flight::json(["message" => "Found no active user with id " . $id]);
+        }
+    });
 
 Flight::start();
