@@ -52,7 +52,7 @@ Flight::route('GET /users/details/@id', function($id) {
             Flight::json($result);
         }
         else
-            Flight::json(false);
+            Flight::json(["message" =>"User not found!"]);
 });
 
 Flight::route('POST /users/block/@id', function($id) {
@@ -69,6 +69,62 @@ Flight::route('POST /users/block/@id', function($id) {
         else{
             Flight::json(["message" => "Found no active user with id " . $id]);
         }
+    });
+
+    Flight::route('POST /login', function(){
+        global $conn;
+    
+        // Retrieve user inputs from the request
+        $username = Flight::request()->data['username'];
+        $password = Flight::request()->data['password'];
+    
+        // Retrieve the user data from the database
+        $sql = "SELECT * FROM admin_info WHERE username = ? ";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc(); 
+        $dbPassword = $row['password'];
+
+        if ($row && ($password==$dbPassword)) {
+            // User login successful
+            Flight::json(array('username' => $row['username'], 'status' => 'success', 'message' => 'User logged in successfully.'));
+        }
+        else {
+            // User login failed
+            Flight::halt(401, json_encode(array('status' => 'error', 'message' => 'Invalid username or password')));
+        }
+    });
+
+    Flight::route('GET /logout',function(){
+        global $conn;
+    });
+
+    Flight::route('POST /register', function(){
+        global $conn;
+    
+        $username = Flight::request()->data['username'];
+        $password = Flight::request()->data['password'];
+        $name = Flight::request()->data['name'];
+        $orders = Flight::request()->data['orders'];
+        $image_url = Flight::request()->data['image_url'];
+        $date_of_birth = Flight::request()->data['date_of_birth'];
+
+        $sql = "SELECT * FROM users WHERE username = '$username'";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            Flight::json(array('status' => 'error', 'message' => 'Username already taken.'));
+            return;
+        }
+
+        $sql = "INSERT INTO users (username, password, name, orders, image_url, date_of_birth) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('ssssss', $username, $password, $name, $orders, $image_url, $date_of_birth);
+        $stmt->execute();   
+
+        Flight::json(array('status' => 'success', 'message' => 'User registered successfully'));
     });
 
 Flight::start();
