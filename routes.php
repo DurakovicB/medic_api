@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-include('Config.class.php');
+//include('Config.class.php');
 
 //$conn = new mysqli($servername, $mysql_username, $mysql_password, $dbname);
 $conn = new mysqli(Config::DB_HOST(), Config::DB_USERNAME(), Config::DB_PASSWORD(), Config::DB_SCHEME());
@@ -16,9 +16,7 @@ if ($conn->connect_error) {
 
 Flight::route('/', function(){
     print("Hello!");
-    $response = Flight::request()->post('/users/block/1', $data);
 
-    echo 'Response: ' . $response->data;
 });
 
 Flight::route('GET /users', function(){
