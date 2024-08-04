@@ -67,6 +67,7 @@ Flight::route('PUT /users/update/@id', function($id) {
     $image = $data['image'];
     $status = $data['status'];
     $date_of_birth = $data['date_of_birth'];
+    $last_login_date = $data['last_login_date'];
 
     $sql = "UPDATE users SET name = ?, username = ?, orders = ?, last_login_date = ?, image = ?, status = ?, date_of_birth = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
@@ -141,18 +142,19 @@ Flight::route('POST /users/block/@id', function($id) {
         $image = Flight::request()->data['image'];
         $status = Flight::request()->data['status'];
         $date_of_birth = Flight::request()->data['date_of_birth'];
+        $last_login_date = date('Y-m-d H:i:s');
 
         $sql = "SELECT * FROM users WHERE username = '$username'";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
-            Flight::json(array('status' => 'error', 'message' => 'Username already taken.'));
+            Flight::halt(401,json_encode(array('status' => 'error', 'message' => 'Username already taken.')));
             return;
         }
 
-        $sql = "INSERT INTO users (username, name, orders, image, status, date_of_birth) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO users (username, name, orders, image, status, date_of_birth, last_login_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param('ssssss', $username, $name, $orders, $image, $status, $date_of_birth);
+        $stmt->bind_param('sssssss', $username, $name, $orders, $image, $status, $date_of_birth, $last_login_date);
         $stmt->execute();   
 
         Flight::json(array('status' => 'success', 'message' => 'User registered successfully'));
