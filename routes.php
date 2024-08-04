@@ -136,7 +136,7 @@ Flight::route('POST /users/block/@id', function($id) {
 
     Flight::route('POST /logout',function(){
         global $conn;
-        $username = Flight::request()->data;
+        $username = Flight::request()->data["username"];
 
         $sql = "UPDATE admin_info SET jwt= '' WHERE username =  ? ";
         $stmt = $conn->prepare($sql);
