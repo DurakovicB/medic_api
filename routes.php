@@ -8,7 +8,7 @@ use Firebase\JWT\Key;
 //include('Config.class.php');
 
 //$conn = new mysqli($servername, $mysql_username, $mysql_password, $dbname);
-$conn = new mysqli(Config::DB_HOST(), Config::DB_USERNAME(), Config::DB_PASSWORD(), Config::DB_SCHEME());
+$conn = new mysqli(DB_HOST(), DB_USERNAME(), DB_PASSWORD(), DB_SCHEME());
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -118,7 +118,7 @@ Flight::route('POST /users/block/@id', function($id) {
         if ($password==$dbPassword) {
             // User login successful
             $row['rand'] = rand(100000, 999999);
-            $jwt = JWT::encode($row, Config::JWT_SECRET(), 'HS256');
+            $jwt = JWT::encode($row, JWT_SECRET(), 'HS256');
             $sql = "UPDATE admin_info SET jwt= ? WHERE username = ? ";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param('ss', $jwt, $username);
