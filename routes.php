@@ -55,6 +55,30 @@ Flight::route('GET /users/details/@id', function($id) {
             Flight::json(["message" =>"User not found!"]);
 });
 
+Flight::route('PUT /users/update/@id', function($id) {
+    global $conn;
+
+    $data = Flight::request()->data->getData();
+    $name = $data['name'];
+    $username = $data['username'];
+    $orders = $data['orders'];
+    $image = $data['image'];
+    $status = $data['status'];
+    $date_of_birth = $data['date_of_birth'];
+
+    $sql = "UPDATE users SET name = ?, username = ?, orders = ?, last_login_date = ?, image = ?, status = ?, date_of_birth = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('ssissssi', $name, $username, $orders, $last_login_date, $image, $status, $date_of_birth, $id);
+    $stmt->execute();
+
+    if ($stmt->affected_rows > 0) {
+        Flight::json(["message" => "Updated user with id " . $id]);
+    } else {
+        Flight::json(["message" => "No user found with id " . $id]);
+    }
+});
+
+
 Flight::route('POST /users/block/@id', function($id) {
     global $conn;
 
@@ -105,10 +129,10 @@ Flight::route('POST /users/block/@id', function($id) {
         global $conn;
     
         $username = Flight::request()->data['username'];
-        $password = Flight::request()->data['password'];
         $name = Flight::request()->data['name'];
         $orders = Flight::request()->data['orders'];
-        $image_url = Flight::request()->data['image_url'];
+        $image = Flight::request()->data['image'];
+        $status = Flight::request()->data['status'];
         $date_of_birth = Flight::request()->data['date_of_birth'];
 
         $sql = "SELECT * FROM users WHERE username = '$username'";
@@ -119,9 +143,9 @@ Flight::route('POST /users/block/@id', function($id) {
             return;
         }
 
-        $sql = "INSERT INTO users (username, password, name, orders, image_url, date_of_birth) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO users (username, name, orders, image, status, date_of_birth) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param('ssssss', $username, $password, $name, $orders, $image_url, $date_of_birth);
+        $stmt->bind_param('ssssss', $username, $name, $orders, $image, $status, $date_of_birth);
         $stmt->execute();   
 
         Flight::json(array('status' => 'success', 'message' => 'User registered successfully'));
