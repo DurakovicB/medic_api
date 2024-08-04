@@ -3,6 +3,8 @@ ini_set('display_errors',1);
 ini_set('display_startup_errors',1);
 error_reporting(E_ALL);
 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 include('Config.class.php');
 
 //$conn = new mysqli($servername, $mysql_username, $mysql_password, $dbname);
@@ -109,15 +111,20 @@ Flight::route('POST /users/block/@id', function($id) {
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc(); 
+        if(!$row){
+            Flight::halt(401, json_encode(array('status' => 'error', 'message' => 'Invalid username!')));
+        }
         $dbPassword = $row['password'];
 
-        if ($row && ($password==$dbPassword)) {
+        if ($password==$dbPassword) {
             // User login successful
-            Flight::json(array('username' => $row['username'], 'status' => 'success', 'message' => 'User logged in successfully.'));
+            $jwt = JWT::encode($row, Config::JWT_SECRET(), 'HS256');
+
+            Flight::json(array('username' => $row['username'], 'status' => 'success', 'message' => 'User logged in successfully.','token' => $jwt));
         }
         else {
             // User login failed
-            Flight::halt(401, json_encode(array('status' => 'error', 'message' => 'Invalid username or password')));
+            Flight::halt(401, json_encode(array('status' => 'error', 'message' => 'Invalid password!')));
         }
     });
 

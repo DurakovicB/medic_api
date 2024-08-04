@@ -1,7 +1,8 @@
 {
     "name": "bilal/medic_api",
     "require": {
-        "mikecao/flight": "^3.11"
+        "mikecao/flight": "^3.11",
+        "firebase/php-jwt": "^6.10"
     },
     "autoload": {
         "psr-4": {
