@@ -8,7 +8,7 @@ use Firebase\JWT\Key;
 //include('Config.class.php');
 
 //$conn = new mysqli($servername, $mysql_username, $mysql_password, $dbname);
-$conn = new mysqli(${DB_HOST}, ${DB_USERNAME}, ${DB_PASSWORD}, ${DB_SCHEME});
+$conn = new mysqli($DB_HOST, $DB_USERNAME, $DB_PASSWORD, $DB_SCHEME);
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
