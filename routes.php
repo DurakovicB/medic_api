@@ -119,7 +119,12 @@ Flight::route('POST /users/block/@id', function($id) {
 
         if ($password==$dbPassword) {
             // User login successful
+            $row['rand'] = rand(100000, 999999);
             $jwt = JWT::encode($row, Config::JWT_SECRET(), 'HS256');
+            $sql = "UPDATE admin_info SET jwt= ? WHERE username = ? ";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param('ss', $jwt, $username);
+            $stmt->execute();
 
             Flight::json(array('username' => $row['username'], 'status' => 'success', 'message' => 'User logged in successfully.','token' => $jwt));
         }
@@ -129,8 +134,25 @@ Flight::route('POST /users/block/@id', function($id) {
         }
     });
 
-    Flight::route('GET /logout',function(){
+    Flight::route('POST /logout',function(){
         global $conn;
+        $username = Flight::request()->data;
+
+        $sql = "UPDATE admin_info SET jwt= '' WHERE username =  ? ";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $username);
+        $stmt->execute();
+
+        if ($stmt->affected_rows > 0) {
+            Flight::json(array('status' => 'success', 'message' => 'User logged out successfully.'));
+        }
+        else{ 
+            $debug_sql = "UPDATE admin_info SET jwt= '' WHERE username = '$username'";
+            Flight::halt(401, json_encode(array(
+                'status' => 'error',
+                'message' => 'Logout failed!',
+                'debug_sql' => $debug_sql
+            )));}
     });
 
     Flight::route('POST /register', function(){
