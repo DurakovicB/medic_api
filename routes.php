@@ -125,7 +125,7 @@ Flight::route('POST /login', function(){
             'iss' => 'e.com',
             'iat' => time(),
             'exp' => time() + 3600,
-            'sub' => $row['user_id'],
+            'sub' => $row['username'],
             'n' => $row['name'],
             'e' => $row['email']
         ];
