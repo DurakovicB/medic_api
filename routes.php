@@ -26,9 +26,82 @@ try {
   echo "Error: " . $e->getMessage();
 }
 
-Flight::route('/', function(){
-    print("Hello!");
+$routes = [
+    [
+        'method' => 'GET',
+        'url' => '/users',
+        'description' => 'Retrieve all users.',
+        'parameters' => []
+    ],
+    [
+        'method' => 'GET',
+        'url' => '/users/details/@id',
+        'description' => 'Retrieve details of a user by ID.',
+        'parameters' => ['id' => 'User ID']
+    ],
+    [
+        'method' => 'PUT',
+        'url' => '/users/update/@id',
+        'description' => 'Update user details by ID.',
+        'parameters' => [
+            'id' => 'User ID',
+            'name' => 'Name',
+            'username' => 'Username',
+            'orders' => 'Orders',
+            'last_login_date' => 'Last Login Date',
+            'image' => 'Image',
+            'status' => 'Status',
+            'date_of_birth' => 'Date of Birth'
+        ]
+    ],
+    [
+        'method' => 'POST',
+        'url' => '/users/block/@id',
+        'description' => 'Block a user by ID.',
+        'parameters' => ['id' => 'User ID']
+    ],
+    [
+        'method' => 'POST',
+        'url' => '/login',
+        'description' => 'Login a user.',
+        'parameters' => ['username' => 'Username', 'password' => 'Password']
+    ],
+    [
+        'method' => 'POST',
+        'url' => '/logout',
+        'description' => 'Logout a user.',
+        'parameters' => ['username' => 'Username']
+    ],
+    [
+        'method' => 'POST',
+        'url' => '/register',
+        'description' => 'Register a new user.',
+        'parameters' => [
+            'username' => 'Username',
+            'name' => 'Name',
+            'orders' => 'Orders',
+            'image' => 'Image',
+            'status' => 'Status',
+            'date_of_birth' => 'Date of Birth'
+        ]
+    ]
+];
 
+Flight::route('/', function() use ($routes) {
+    echo "<h1>API Routes</h1><ul>";
+    foreach ($routes as $route) {
+        echo "<li><strong>{$route['method']} {$route['url']}</strong><br>";
+        echo "{$route['description']}<br>";
+        if (!empty($route['parameters'])) {
+            echo "Parameters:<ul>";
+            foreach ($route['parameters'] as $param => $desc) {
+                echo "<li><strong>{$param}</strong>: {$desc}</li>";
+            }
+            echo "</ul>";
+        }
+        echo "</li><br>";
+    }
+    echo "</ul>";
 });
 
 Flight::route('GET /users', function(){
