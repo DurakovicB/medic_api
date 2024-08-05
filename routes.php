@@ -125,12 +125,10 @@ Flight::route('POST /login', function(){
             'iss' => 'e.com',
             'iat' => time(),
             'exp' => time() + 3600,
-            'sub' => $row['username'],
-            'n' => $row['name'],
-            'e' => $row['email']
+            'sub' => $row['username']
         ];
 
-        $jwt = JWT::encode($payload, "ezcb9s8UcF", 'HS256');
+        $jwt = JWT::encode($payload, "ezcb9s", 'HS256');
         $sql = "UPDATE admin_info SET jwt = :jwt WHERE username = :username";
         $stmt = $db->prepare($sql);
         $stmt->execute(['jwt' => $jwt, 'username' => $username]);
