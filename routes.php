@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-include('Config.class.php');
+//include('Config.class.php');
 
 //$conn = new mysqli($servername, $mysql_username, $mysql_password, $dbname);
 $uri = "mysql://doadmin:AVNS_OhWgXwUUN5lOe1rTkod@dbmedic-do-user-17420875-0.i.db.ondigitalocean.com:25060/defaultdb?ssl-mode=REQUIRED";
