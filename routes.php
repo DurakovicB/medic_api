@@ -102,6 +102,13 @@ Flight::route('/', function() use ($routes) {
         echo "</li><br>";
     }
     echo "</ul>";
+
+    echo "<h2>Login Instructions</h2>";
+    echo "<p>To login, use the following credentials:</p>";
+    echo "<ul>";
+    echo "<li><strong>Username:</strong> admin</li>";
+    echo "<li><strong>Password:</strong> 123</li>";
+    echo "</ul>";
 });
 
 Flight::route('GET /users', function(){

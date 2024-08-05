@@ -17,12 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit(0);
 }
 
-echo "<h2>Login Instructions</h2>";
-echo "<p>To login, use the following credentials:</p>";
-echo "<ul>";
-echo "<li><strong>Username:</strong> admin</li>";
-echo "<li><strong>Password:</strong> 123</li>";
-echo "</ul>";
+
 
 require 'vendor/autoload.php';
 include_once('routes.php');
