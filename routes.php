@@ -122,11 +122,10 @@ Flight::route('POST /login', function(){
     if ($password == $dbPassword) {
         // User login successful
         $row['rand'] = rand(100000, 999999);
-        $jwt = JWT::encode($row, JWT_SECRET(), 'HS256');
+        $jwt = JWT::encode($row, "ezcb9s8UcF", 'HS256');
         $sql = "UPDATE admin_info SET jwt = :jwt WHERE username = :username";
         $stmt = $db->prepare($sql);
         $stmt->execute(['jwt' => $jwt, 'username' => $username]);
-
         Flight::json(['username' => $row['username'], 'status' => 'success', 'message' => 'User logged in successfully.', 'token' => $jwt]);
     } else {
         // User login failed
